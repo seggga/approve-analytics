@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package="./analytics;analytics";
+package analytics.v1;
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service AnalyticAPI {
+    rpc WriteMessage (WriteMessageRequest) returns (google.protobuf.Empty) {}
+}
+
+message WriteMessageRequest {
+    string EventType  = 1;
+	uint64 TaskID = 2;
+	string Approver = 3;
+	google.protobuf.Timestamp TimeStamp = 4;
+}

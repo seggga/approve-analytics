@@ -1,0 +1,18 @@
+# config.yaml
+# postgres DSN, ports number for rest, grpc message listener and grpc auth client
+
+postgres:
+  connection-string: "postgres://root:pass@127.0.0.1:5432/test_db"
+
+ifaces:
+  rest_port: 3000
+  msg_listener_port: 4000
+  auth_server_address: "auth:4000"
+
+logger:
+  level: debug
+
+kafka: 
+  server: "127.0.0.1:9093"
+  topic: "approve-events"
+  group_id: "approve-consumer-group"

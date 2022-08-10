@@ -1,0 +1,111 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Signed token protects our admin endpoints",
+        "title": "Analytics service",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "version": "1.0.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/delays": {
+            "get": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "description": "Get delays on all finished and declined tasks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get delays",
+                "operationId": "delays",
+                "responses": {
+                    "200": {
+                        "description": "task id and lag",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Delay"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/totals": {
+            "get": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "description": "Get total amount of finished and declined tasks",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "analytics"
+                ],
+                "summary": "Get total counts",
+                "operationId": "totals",
+                "responses": {
+                    "200": {
+                        "description": "finished and declined task counters",
+                        "schema": {
+                            "$ref": "#/definitions/models.Totals"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Delay": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "lag": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Totals": {
+            "type": "object",
+            "properties": {
+                "declined": {
+                    "type": "integer"
+                },
+                "finished": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

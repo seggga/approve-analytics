@@ -1,0 +1,71 @@
+basePath: /
+definitions:
+  models.Delay:
+    properties:
+      id:
+        type: integer
+      lag:
+        type: integer
+    type: object
+  models.Totals:
+    properties:
+      declined:
+        type: integer
+      finished:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Signed token protects our admin endpoints
+  title: Analytics service
+  version: 1.0.0
+paths:
+  /delays:
+    get:
+      description: Get delays on all finished and declined tasks
+      operationId: delays
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: task id and lag
+          schema:
+            items:
+              $ref: '#/definitions/models.Delay'
+            type: array
+        "500":
+          description: internal error
+          schema:
+            type: string
+      security:
+      - Auth: []
+      summary: Get delays
+      tags:
+      - analytics
+  /totals:
+    get:
+      description: Get total amount of finished and declined tasks
+      operationId: totals
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: finished and declined task counters
+          schema:
+            $ref: '#/definitions/models.Totals'
+        "500":
+          description: internal error
+          schema:
+            type: string
+      security:
+      - Auth: []
+      summary: Get total counts
+      tags:
+      - analytics
+schemes:
+- http
+swagger: "2.0"

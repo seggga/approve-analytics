@@ -1,0 +1,73 @@
+version: "3"
+
+services:
+  
+  zookeeper:
+
+    image: docker.io/bitnami/zookeeper:latest
+    networks:
+      - kafkanet
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  
+  kafka:
+
+    image: docker.io/bitnami/kafka:latest
+    networks:
+      - kafkanet
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      # Comma separated host:port pairs, each corresponding to a Zookeeper Server
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      # Allow to use the PLAINTEXT listener (instead of a secure one: SSL, SASL_SSL, or SASL_PLAIN (not that secure))
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      # Client - internal listener, external - external listener
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      # What interfaces Kafka binds to
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      # How clients can connect
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://127.0.0.1:9093
+      # Listener used for communications between brokers
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+  
+  db:
+    image: postgres:13.7
+    container_name: analytics-postgres
+    restart: always
+    networks:
+      - kafkanet
+    environment:
+      POSTGRES_USER: 'root'
+      POSTGRES_PASSWORD: 'pass'
+      POSTGRES_DB: 'team9'
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer:4.8.1
+    container_name: analytics-adminer
+    restart: always
+    networks:
+      - kafkanet
+    ports:
+      - 8080:8080
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+
+networks:
+  kafkanet:
+    driver: bridge
